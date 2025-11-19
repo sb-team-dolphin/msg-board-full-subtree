@@ -1,0 +1,29 @@
+# AWS 설정
+aws_region   = "ap-northeast-2"
+project_name = "myapp"
+environment  = "prod"
+
+# VPC 설정
+vpc_cidr           = "10.0.0.0/16"
+availability_zones = ["ap-northeast-2a", "ap-northeast-2c"]
+
+# ECS 설정
+ecs_backend_cpu    = "256"   # 0.25 vCPU
+ecs_backend_memory = "512"   # 512 MB
+ecs_frontend_cpu   = "256"
+ecs_frontend_memory = "512"
+
+backend_desired_count  = 2
+frontend_desired_count = 2
+
+# Auto Scaling
+backend_min_capacity  = 1
+backend_max_capacity  = 10
+frontend_min_capacity = 1
+frontend_max_capacity = 10
+
+cpu_target_value    = 70
+memory_target_value = 80
+
+# 사용 전에 이 파일을 terraform.tfvars로 복사하고 필요에 따라 수정하세요
+# cp terraform.tfvars.example terraform.tfvars

@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: myapp-backend
+
+  # 프로파일 설정
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+# 서버 설정
+server:
+  port: 8080
+  shutdown: graceful  # Graceful shutdown for Blue/Green deployment
+
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    com.myapp: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Actuator 설정 (Health Check)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+
+# 애플리케이션 정보
+info:
+  app:
+    name: MyApp Backend
+    description: Demo Backend Application for DevOps Pipeline
+    version: 1.0.0
