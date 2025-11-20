@@ -8,8 +8,10 @@ Spring Boot 기반 RESTful API 서버
 
 - Java 17
 - Spring Boot 3.2.0
+- Spring Data JPA
 - Maven
 - Lombok
+- MySQL 8.0 (RDS) / H2 (로컬)
 
 ## 빠른 시작
 
@@ -139,15 +141,18 @@ mvn test jacoco:report
 
 ## 프로파일
 
-### dev (개발)
+### local (로컬 개발 - H2 In-Memory DB)
 ```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
+- H2 Console: http://localhost:8080/h2-console
+- JDBC URL: `jdbc:h2:mem:myappdb`
 
-### prod (프로덕션)
+### prod (프로덕션 - RDS MySQL)
 ```bash
 java -jar target/myapp-backend.jar --spring.profiles.active=prod
 ```
+- RDS MySQL 연결 (환경 변수 필요)
 
 ---
 
@@ -155,8 +160,13 @@ java -jar target/myapp-backend.jar --spring.profiles.active=prod
 
 | 변수명 | 설명 | 기본값 |
 |--------|------|--------|
-| `SPRING_PROFILES_ACTIVE` | 활성 프로파일 | `dev` |
+| `SPRING_PROFILES_ACTIVE` | 활성 프로파일 | `local` |
 | `SERVER_PORT` | 서버 포트 | `8080` |
+| `DB_HOST` | RDS 호스트 (prod) | - |
+| `DB_PORT` | RDS 포트 (prod) | `3306` |
+| `DB_NAME` | 데이터베이스 이름 (prod) | - |
+| `DB_USERNAME` | DB 사용자명 (prod) | - |
+| `DB_PASSWORD` | DB 비밀번호 (prod) | - |
 
 ---
 
@@ -178,8 +188,7 @@ backend/
 │   │   │   └── model/
 │   │   │       └── User.java               # User 모델
 │   │   └── resources/
-│   │       ├── application.yml             # 기본 설정
-│   │       └── application-prod.yml        # 프로덕션 설정
+│   │       └── application.yml             # 설정 (local/prod 프로파일 포함)
 │   └── test/
 │       └── java/com/myapp/
 │           ├── MyAppApplicationTests.java

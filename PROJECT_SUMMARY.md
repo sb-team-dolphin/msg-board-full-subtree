@@ -45,7 +45,9 @@ Users (via ALB DNS)
 ### Backend (Spring Boot)
 - **언어**: Java 17
 - **프레임워크**: Spring Boot 3.2.0
+- **ORM**: Spring Data JPA
 - **빌드 도구**: Maven
+- **데이터베이스**: MySQL 8.0 (RDS)
 - **기능**: RESTful API (User CRUD), Health Check
 
 ### Frontend (React)
@@ -59,6 +61,8 @@ Users (via ALB DNS)
 - **ECS Fargate**: 서버리스 컨테이너 실행
 - **ALB**: HTTP/HTTPS 로드 밸런싱
 - **ECR**: Docker 이미지 레지스트리
+- **RDS**: MySQL 8.0 데이터베이스
+- **Secrets Manager**: DB 비밀번호 관리
 - **CloudWatch**: 로그 및 메트릭
 
 ### CI/CD (GitHub Actions)
@@ -101,7 +105,8 @@ SoftBank/
 │   │   ├── ecs/
 │   │   ├── alb/
 │   │   ├── ecr/
-│   │   └── iam/
+│   │   ├── iam/
+│   │   └── rds/
 │   └── README.md
 │
 ├── .github/
@@ -171,9 +176,10 @@ git push origin main
 | ECS Fargate (Frontend) | 0.25 vCPU, 0.5GB × 2 | $7.50 |
 | ALB | 트래픽 10GB | $20 |
 | NAT Gateway × 2 | 트래픽 10GB | $70 |
+| RDS MySQL | db.t3.micro, 20GB | $15 |
 | ECR | 10GB | $1 |
 | CloudWatch | 로그 5GB | $3 |
-| **총계** | | **약 $109/월** |
+| **총계** | | **약 $124/월** |
 
 **비용 절감 팁**:
 - 개발 환경은 사용 후 `terraform destroy`
@@ -213,6 +219,8 @@ git push origin main
 - [x] IAM Roles & Policies
 - [x] CloudWatch Log Groups
 - [x] Auto Scaling Policies
+- [x] RDS MySQL Database
+- [x] Secrets Manager (DB Password)
 
 ### Application
 - [x] Spring Boot Backend API
@@ -249,9 +257,8 @@ git push origin main
 
 ### 중기 (1개월)
 - [ ] Blue/Green 배포 (CodeDeploy)
-- [ ] RDS PostgreSQL 연동
 - [ ] ElastiCache Redis 추가
-- [ ] Secrets Manager 통합
+- [ ] ECS Exec 활성화 (DB 디버깅용)
 
 ### 장기 (3개월)
 - [ ] Multi-Region 배포
@@ -266,8 +273,10 @@ git push origin main
 ### Backend
 - Java 17
 - Spring Boot 3.2.0
+- Spring Data JPA
 - Maven
 - Lombok
+- MySQL Connector
 
 ### Frontend
 - React 18
@@ -277,7 +286,7 @@ git push origin main
 
 ### Infrastructure
 - Terraform 1.0+
-- AWS (ECS, ALB, ECR, VPC)
+- AWS (ECS, ALB, ECR, VPC, RDS)
 - Docker
 - Nginx
 

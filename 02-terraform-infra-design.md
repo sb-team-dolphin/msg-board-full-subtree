@@ -58,7 +58,12 @@ terraform/
 │   │   ├── variables.tf
 │   │   └── outputs.tf
 │   │
-│   └── iam/               # IAM Roles & Policies
+│   ├── iam/               # IAM Roles & Policies
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   │
+│   └── rds/               # RDS MySQL Database
 │       ├── main.tf
 │       ├── variables.tf
 │       └── outputs.tf
@@ -169,7 +174,31 @@ Health Check:
 
 ---
 
-### 6. CodeDeploy (Blue/Green 배포)
+### 6. RDS (MySQL Database)
+
+**구성 요소:**
+- RDS MySQL 8.0 Instance
+- DB Subnet Group (Private Subnets)
+- Security Group (ECS에서만 3306 접근 허용)
+- Secrets Manager (DB 비밀번호 저장)
+
+**주요 설정:**
+```
+Engine: MySQL 8.0
+Instance Class: db.t3.micro (프리 티어)
+Storage: 20GB gp2
+Multi-AZ: false (개발), true (프로덕션)
+Backup Retention: 1일 (프리 티어)
+```
+
+**보안:**
+- Private Subnet에 배치 (외부 접근 차단)
+- ECS Security Group에서만 접근 가능
+- 비밀번호는 Secrets Manager에 자동 생성/저장
+
+---
+
+### 7. CodeDeploy (Blue/Green 배포)
 
 **구성 요소:**
 - CodeDeploy Application

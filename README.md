@@ -41,7 +41,7 @@ Terraform + GitHub Actions + AWS ECS (Fargate) + Blue/Green 배포를 활용한 
 │       ├── alb/
 │       ├── ecr/
 │       ├── iam/
-│       └── codedeploy/
+│       └── rds/
 │
 ├── .github/
 │   └── workflows/
@@ -64,8 +64,9 @@ Terraform + GitHub Actions + AWS ECS (Fargate) + Blue/Green 배포를 활용한 
 ### Backend
 - Java 17
 - Spring Boot 3.2.0
+- Spring Data JPA
 - Maven
-- PostgreSQL (RDS)
+- MySQL 8.0 (RDS)
 
 ### Frontend
 - React 18
@@ -483,6 +484,7 @@ terraform destroy
 - [SETUP_GUIDE.md](./SETUP_GUIDE.md) - 상세 설정 가이드
 - [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) - 배포 가이드
 - [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - 문제 해결
+- [RDS_SETUP_GUIDE.md](./RDS_SETUP_GUIDE.md) - RDS MySQL 설정 가이드
 - [backend/README.md](./backend/README.md) - 백엔드 상세
 - [frontend/README.md](./frontend/README.md) - 프론트엔드 상세
 - [terraform/README.md](./terraform/README.md) - Terraform 상세
@@ -507,7 +509,7 @@ A: Docker Compose 사용 (별도 docker-compose.yml 제공)
 A: ACM(AWS Certificate Manager)에서 인증서 발급 후 ALB에 적용
 
 ### Q5: 데이터베이스는 어떻게 설정하나요?
-A: RDS PostgreSQL 모듈이 Terraform에 포함되어 있으며, 선택적으로 활성화 가능
+A: RDS MySQL 모듈이 Terraform에 포함되어 있으며, `terraform apply` 시 자동 생성됩니다. 자세한 내용은 [RDS_SETUP_GUIDE.md](./RDS_SETUP_GUIDE.md)를 참조하세요.
 
 ---
 
@@ -539,7 +541,7 @@ MIT License
 6. 📊 CloudWatch 모니터링 설정
 7. 🔒 HTTPS 및 보안 강화
 8. 📈 Auto Scaling 튜닝
-9. 🗄️ RDS 데이터베이스 연동
+9. ✅ RDS MySQL 데이터베이스 연동
 10. 🚀 프로덕션 배포
 
 **프로젝트 시작하기**: [SETUP_GUIDE.md](./SETUP_GUIDE.md)를 참조하세요!

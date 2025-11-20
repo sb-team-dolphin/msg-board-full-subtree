@@ -581,11 +581,34 @@ aws logs tail /ecs/myapp-backend --follow
 4. ✅ 첫 배포 완료
 
 **추가 작업:**
+- [x] RDS MySQL 데이터베이스 연동
 - [ ] 도메인 연결 (Route 53)
 - [ ] HTTPS 설정 (ACM + ALB)
 - [ ] Auto Scaling 튜닝
 - [ ] CloudWatch 알람 설정
 - [ ] 비용 모니터링
+
+---
+
+## 10. RDS MySQL 설정
+
+RDS MySQL은 Terraform으로 자동 생성됩니다. 자세한 내용은 [RDS_SETUP_GUIDE.md](./RDS_SETUP_GUIDE.md)를 참조하세요.
+
+### 주요 구성
+- **DB 엔진**: MySQL 8.0
+- **인스턴스**: db.t3.micro (프리 티어)
+- **스토리지**: 20GB gp2
+- **비밀번호**: AWS Secrets Manager에 자동 저장
+
+### 확인 방법
+```bash
+# RDS 정보 확인
+terraform output rds_endpoint
+terraform output rds_address
+
+# API로 데이터 확인
+curl http://<ALB_DNS>/api/users
+```
 
 ---
 
