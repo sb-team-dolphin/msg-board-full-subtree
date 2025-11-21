@@ -33,18 +33,8 @@ variable "backend_ecr_url" {
   type        = string
 }
 
-variable "frontend_ecr_url" {
-  description = "Frontend ECR Repository URL"
-  type        = string
-}
-
 variable "backend_target_group_arn" {
   description = "Backend Target Group ARN"
-  type        = string
-}
-
-variable "frontend_target_group_arn" {
-  description = "Frontend Target Group ARN"
   type        = string
 }
 
@@ -63,33 +53,13 @@ variable "backend_memory" {
   type        = string
 }
 
-variable "frontend_cpu" {
-  description = "Frontend CPU units"
-  type        = string
-}
-
-variable "frontend_memory" {
-  description = "Frontend Memory (MB)"
-  type        = string
-}
-
 variable "backend_desired_count" {
   description = "Backend desired task count"
   type        = number
 }
 
-variable "frontend_desired_count" {
-  description = "Frontend desired task count"
-  type        = number
-}
-
 variable "backend_container_port" {
   description = "Backend container port"
-  type        = number
-}
-
-variable "frontend_container_port" {
-  description = "Frontend container port"
   type        = number
 }
 
@@ -100,16 +70,6 @@ variable "backend_min_capacity" {
 
 variable "backend_max_capacity" {
   description = "Backend maximum capacity"
-  type        = number
-}
-
-variable "frontend_min_capacity" {
-  description = "Frontend minimum capacity"
-  type        = number
-}
-
-variable "frontend_max_capacity" {
-  description = "Frontend maximum capacity"
   type        = number
 }
 

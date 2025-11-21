@@ -28,11 +28,6 @@ output "ecr_backend_repository_url" {
   value       = module.ecr.backend_repository_url
 }
 
-output "ecr_frontend_repository_url" {
-  description = "Frontend ECR Repository URL"
-  value       = module.ecr.frontend_repository_url
-}
-
 output "ecs_cluster_name" {
   description = "ECS Cluster Name"
   value       = module.ecs.cluster_name
@@ -48,29 +43,14 @@ output "backend_service_name" {
   value       = module.ecs.backend_service_name
 }
 
-output "frontend_service_name" {
-  description = "Frontend ECS Service Name"
-  value       = module.ecs.frontend_service_name
-}
-
 output "backend_task_definition_family" {
   description = "Backend Task Definition Family"
   value       = module.ecs.backend_task_definition_family
 }
 
-output "frontend_task_definition_family" {
-  description = "Frontend Task Definition Family"
-  value       = module.ecs.frontend_task_definition_family
-}
-
 output "cloudwatch_log_group_backend" {
   description = "CloudWatch Log Group for Backend"
   value       = "/ecs/${var.project_name}-backend"
-}
-
-output "cloudwatch_log_group_frontend" {
-  description = "CloudWatch Log Group for Frontend"
-  value       = "/ecs/${var.project_name}-frontend"
 }
 
 # RDS Outputs
@@ -93,21 +73,17 @@ output "rds_secret_arn" {
 output "deployment_info" {
   description = "Deployment information summary"
   value = {
-    alb_url                      = "http://${module.alb.alb_dns_name}"
-    backend_api_url              = "http://${module.alb.alb_dns_name}/api/users"
-    backend_health_url           = "http://${module.alb.alb_dns_name}/health"
-    ecr_backend_repo             = module.ecr.backend_repository_url
-    ecr_frontend_repo            = module.ecr.frontend_repository_url
-    ecs_cluster                  = module.ecs.cluster_name
-    backend_service              = module.ecs.backend_service_name
-    frontend_service             = module.ecs.frontend_service_name
-    cloudwatch_backend_logs_cmd  = "aws logs tail /ecs/${var.project_name}-backend --follow"
-    cloudwatch_frontend_logs_cmd = "aws logs tail /ecs/${var.project_name}-frontend --follow"
-    rds_endpoint                 = module.rds.db_endpoint
-    rds_secret_arn               = module.rds.db_secret_arn
-    deployment_type              = "Blue/Green (CodeDeploy)"
-    codedeploy_backend_app       = module.codedeploy.backend_app_name
-    codedeploy_frontend_app      = module.codedeploy.frontend_app_name
+    alb_url                     = "http://${module.alb.alb_dns_name}"
+    backend_api_url             = "http://${module.alb.alb_dns_name}/api/users"
+    backend_health_url          = "http://${module.alb.alb_dns_name}/health"
+    ecr_backend_repo            = module.ecr.backend_repository_url
+    ecs_cluster                 = module.ecs.cluster_name
+    backend_service             = module.ecs.backend_service_name
+    cloudwatch_backend_logs_cmd = "aws logs tail /ecs/${var.project_name}-backend --follow"
+    rds_endpoint                = module.rds.db_endpoint
+    rds_secret_arn              = module.rds.db_secret_arn
+    deployment_type             = "Blue/Green (CodeDeploy)"
+    codedeploy_backend_app      = module.codedeploy.backend_app_name
   }
 }
 
@@ -117,17 +93,7 @@ output "codedeploy_backend_app_name" {
   value       = module.codedeploy.backend_app_name
 }
 
-output "codedeploy_frontend_app_name" {
-  description = "CodeDeploy Frontend Application Name"
-  value       = module.codedeploy.frontend_app_name
-}
-
 output "codedeploy_backend_deployment_group" {
   description = "CodeDeploy Backend Deployment Group Name"
   value       = module.codedeploy.backend_deployment_group_name
-}
-
-output "codedeploy_frontend_deployment_group" {
-  description = "CodeDeploy Frontend Deployment Group Name"
-  value       = module.codedeploy.frontend_deployment_group_name
 }

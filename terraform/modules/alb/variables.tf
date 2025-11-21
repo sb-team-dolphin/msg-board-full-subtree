@@ -23,9 +23,3 @@ variable "backend_port" {
   type        = number
   default     = 8080
 }
-
-variable "frontend_port" {
-  description = "Frontend container port"
-  type        = number
-  default     = 80
-}

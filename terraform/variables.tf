@@ -41,26 +41,8 @@ variable "ecs_backend_memory" {
   default     = "512"  # 512 MB
 }
 
-variable "ecs_frontend_cpu" {
-  description = "Frontend ECS Task CPU units"
-  type        = string
-  default     = "256"
-}
-
-variable "ecs_frontend_memory" {
-  description = "Frontend ECS Task Memory (MB)"
-  type        = string
-  default     = "512"
-}
-
 variable "backend_desired_count" {
   description = "Desired number of backend tasks"
-  type        = number
-  default     = 2
-}
-
-variable "frontend_desired_count" {
-  description = "Desired number of frontend tasks"
   type        = number
   default     = 2
 }
@@ -69,12 +51,6 @@ variable "backend_container_port" {
   description = "Backend container port"
   type        = number
   default     = 8080
-}
-
-variable "frontend_container_port" {
-  description = "Frontend container port"
-  type        = number
-  default     = 80
 }
 
 # Auto Scaling
@@ -86,18 +62,6 @@ variable "backend_min_capacity" {
 
 variable "backend_max_capacity" {
   description = "Maximum number of backend tasks"
-  type        = number
-  default     = 10
-}
-
-variable "frontend_min_capacity" {
-  description = "Minimum number of frontend tasks"
-  type        = number
-  default     = 1
-}
-
-variable "frontend_max_capacity" {
-  description = "Maximum number of frontend tasks"
   type        = number
   default     = 10
 }
