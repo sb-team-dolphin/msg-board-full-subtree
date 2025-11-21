@@ -19,6 +19,15 @@ AWS 인프라를 Terraform으로 프로비저닝하기 위한 템플릿 저장�
 ├── DEPLOYMENT_WORKFLOW.md         # 배포 워크플로우 가이드
 ├── TROUBLESHOOTING.md             # 문제 해결 가이드
 │
+├── scripts/                       # 설정 스크립트
+│   ├── setup-terraform-backend.sh   # Linux/Mac
+│   └── setup-terraform-backend.bat  # Windows
+│
+├── terraform-bootstrap/           # State 저장소 설정 (최초 1회)
+│   ├── main.tf
+│   ├── variables.tf
+│   └── outputs.tf
+│
 ├── terraform-backend/             # 백엔드 인프라
 │   ├── main.tf
 │   ├── variables.tf
@@ -64,7 +73,30 @@ AWS 인프라를 Terraform으로 프로비저닝하기 위한 템플릿 저장�
 - Terraform 1.0+
 - AWS CLI
 
-### 백엔드 인프라 구축
+### 0. 사전 설정 (최초 1회)
+
+Terraform State 저장소 설정 (팀 협업 시 필수):
+
+**방법 A: 스크립트 사용**
+```bash
+# Linux/Mac
+./scripts/setup-terraform-backend.sh myapp ap-northeast-2
+
+# Windows
+scripts\setup-terraform-backend.bat myapp ap-northeast-2
+```
+
+**방법 B: Terraform 사용**
+```bash
+cd terraform-bootstrap
+terraform init
+terraform apply
+
+# 출력된 backend 설정을 provider.tf에 추가
+terraform output backend_config
+```
+
+### 1. 백엔드 인프라 구축
 
 ```bash
 cd terraform-backend
@@ -79,7 +111,7 @@ terraform apply
 terraform output alb_dns_name
 ```
 
-### 프론트엔드 인프라 구축
+### 2. 프론트엔드 인프라 구축
 
 ```bash
 cd terraform-frontend
