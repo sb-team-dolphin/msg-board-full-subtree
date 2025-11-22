@@ -1,5 +1,7 @@
 package com.myapp.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,13 +13,14 @@ import java.util.Map;
 
 @Slf4j
 @RestController
+@Tag(name = "Health", description = "헬스 체크 API")
 public class HealthController {
 
-    /**
-     * Health Check 엔드포인트
-     * ALB와 ECS에서 사용
-     */
     @GetMapping("/health")
+    @Operation(
+        summary = "기본 헬스 체크",
+        description = "ALB와 ECS에서 사용하는 헬스 체크 엔드포인트"
+    )
     public ResponseEntity<Map<String, Object>> health() {
         log.debug("Health check requested");
 
@@ -30,10 +33,11 @@ public class HealthController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 상세 Health Check
-     */
     @GetMapping("/health/detail")
+    @Operation(
+        summary = "상세 헬스 체크",
+        description = "시스템 메모리 및 프로세서 정보를 포함한 상세 헬스 체크"
+    )
     public ResponseEntity<Map<String, Object>> healthDetail() {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "UP");

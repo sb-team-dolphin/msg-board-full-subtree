@@ -49,6 +49,20 @@ info:
     description: Demo Backend Application for DevOps Pipeline
     version: 1.0.0
 
+# Swagger/OpenAPI 설정
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operations-sorter: alpha
+    tags-sorter: alpha
+    display-request-duration: true
+    disable-swagger-default-url: true
+  show-actuator: false
+
 ---
 # Local Development Profile (H2 In-Memory)
 spring:
