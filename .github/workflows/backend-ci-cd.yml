@@ -39,7 +39,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚀 CI/CD Pipeline Started* by ${{ github.actor }}\n⬜️⬜️⬜️⬜️ Building and Testing..."
+                  "text": "*[BACKEND] 🚀 CI/CD Pipeline Started* by ${{ github.actor }}\n⬜️⬜️⬜️⬜️ Building and Testing..."
                 }
               },
               {
@@ -100,7 +100,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚀 Build Started* by ${{ github.actor }}\n🟩⬜️⬜️⬜️ Tests Passed & Build Complete"
+                  "text": "*[BACKEND] 🚀 Build Complete* by ${{ github.actor }}\n🟩⬜️⬜️⬜️ Tests Passed & Build Complete"
                 }
               },
               {
@@ -124,7 +124,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚨 Build or Test Failed*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Check Logs Now>"
+                  "text": "*[BACKEND] 🚨 Build or Test Failed*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Check Logs Now>"
                 }
               },
               {
@@ -199,7 +199,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🐳 Docker Image Pushed to ECR*\n🟩🟩⬜️⬜️ Deploying to ECS..."
+                  "text": "*[BACKEND] 🐳 Docker Image Pushed to ECR*\n🟩🟩⬜️⬜️ Deploying to ECS..."
                 }
               },
               {
@@ -223,7 +223,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚨 Docker Build/Push Failed*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Check Logs Now>"
+                  "text": "*[BACKEND] 🚨 Docker Build/Push Failed*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Check Logs Now>"
                 }
               },
               {
@@ -281,7 +281,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚢 Starting ECS Deployment...*\n🟩🟩🟩⬜️ This will take approximately 5 minutes"
+                  "text": "*[BACKEND] 🚢 Starting ECS Deployment...*\n🟩🟩🟩⬜️ This will take approximately 5 minutes"
                 }
               },
               {
@@ -313,7 +313,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*✅ Deploy Complete*\n🟩🟩🟩🟩 Live on ECS Production"
+                  "text": "*[BACKEND] ✅ Deploy Complete*\n🟩🟩🟩🟩 Live on ECS Production"
                 }
               },
               {
@@ -346,7 +346,7 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚨 Deploy Failed*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Check Logs Now>"
+                  "text": "*[BACKEND] 🚨 Deploy Failed*\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Check Logs Now>"
                 }
               },
               {
