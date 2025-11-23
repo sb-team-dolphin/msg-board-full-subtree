@@ -282,6 +282,7 @@ jobs:
                 "text": {
                   "type": "mrkdwn",
                   "text": "*🚢 Starting ECS Deployment...*\n🟩🟩🟩⬜️ This will take approximately 5 minutes"
+                }
               },
               {
                 "type": "image",
