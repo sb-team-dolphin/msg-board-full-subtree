@@ -1,0 +1,33 @@
+node_modules/
+dist/
+temp/
+*.log
+.DS_Store
+*.zip
+
+# Electron
+out/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment
+.env
+.env.local
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+
+# AWS
+.aws/
+

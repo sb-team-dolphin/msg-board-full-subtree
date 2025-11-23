@@ -1,0 +1,66 @@
+# Terraform License Notice
+
+This application bundles Terraform, which is licensed under the Business Source License 1.1 (BUSL-1.1).
+
+## License Information
+
+**Product**: Terraform
+**Copyright**: © HashiCorp
+**License**: Business Source License 1.1 (BUSL-1.1)
+**Website**: https://www.terraform.io/
+
+## Usage Terms
+
+This application is provided as a **non-commercial, internal-use tool** and complies with the BUSL-1.1 license terms.
+
+### Permitted Use
+
+✓ Non-commercial use
+✓ Educational and research purposes
+✓ Internal team automation
+✓ Free distribution
+
+### Prohibited Use
+
+✗ Commercial SaaS offerings
+✗ Competing with HashiCorp Terraform Cloud
+✗ Selling as a commercial product
+
+## Statement
+
+```
+This software bundles Terraform (© HashiCorp, BUSL-1.1 License).
+Terraform is provided under the Business Source License 1.1.
+This application is a non-commercial internal-use tool and does not provide
+Terraform as a service nor does it compete with Terraform Cloud.
+```
+
+## HashiCorp License FAQ
+
+According to HashiCorp's licensing FAQ:
+
+> "Wrappers, GUIs, and automation tools that call Terraform are allowed."
+
+This application is a **GUI wrapper** for Terraform and does not replace or compete with Terraform as a service.
+
+## Full License Text
+
+For the complete BUSL-1.1 license text, please visit:
+https://www.hashicorp.com/bsl
+
+## Terraform Download
+
+To use this application, you must download Terraform separately from:
+https://www.terraform.io/downloads
+
+Place the `terraform.exe` file in the `bin/` directory.
+
+## Disclaimer
+
+This application is not affiliated with, endorsed by, or sponsored by HashiCorp.
+Terraform is a registered trademark of HashiCorp.
+
+---
+
+**Last Updated**: November 22, 2025
+

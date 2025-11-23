@@ -1,0 +1,57 @@
+{
+  "name": "terraform-runner",
+  "version": "1.0.0",
+  "description": "Terraform Runner for Windows - Easy Terraform deployment with GUI",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
+  },
+  "keywords": [
+    "terraform",
+    "aws",
+    "electron",
+    "devops"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10"
+  },
+  "build": {
+    "appId": "com.terraform.runner",
+    "productName": "Terraform Runner",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false,
+      "signingHashAlgorithms": null
+    },
+    "extraResources": [
+      {
+        "from": "bin/",
+        "to": "bin/",
+        "filter": [
+          "terraform.exe"
+        ]
+      }
+    ],
+    "files": [
+      "src/**/*",
+      "renderer/**/*",
+      "package.json"
+    ]
+  }
+}
+

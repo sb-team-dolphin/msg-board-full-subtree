@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terraform Runner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Setup Screen -->
+  <div id="setup-screen" class="screen active">
+    <div class="header">
+      <div class="header-icon">🚀</div>
+      <h1 class="header-title">Terraform Runner</h1>
+      <p class="header-subtitle">Terraform 프로젝트를 쉽게 배포하세요</p>
+    </div>
+
+    <div class="content">
+      <!-- ZIP 파일 선택 -->
+      <div class="card">
+        <h3 class="card-title">📦 1. Terraform 프로젝트 선택</h3>
+        <div class="file-select-container">
+          <div class="file-path-display" id="zip-path-display">선택된 파일: (없음)</div>
+          <button class="btn btn-primary" id="select-zip-btn">📁 ZIP 파일 선택</button>
+        </div>
+        <div class="file-info" id="zip-file-info" style="display: none;">
+          <span class="file-info-text" id="zip-file-info-text"></span>
+        </div>
+      </div>
+
+      <!-- 다음 버튼 -->
+      <div class="action-center">
+        <button class="btn btn-large btn-primary" id="next-to-variables-btn" disabled>다음 →</button>
+      </div>
+
+      <!-- 앱 상태 -->
+      <div class="app-status" id="app-status">
+        <p class="status-text">ℹ️ 앱 상태 확인 중...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variables Configuration Screen -->
+  <div id="variables-screen" class="screen">
+    <div class="header">
+      <h1 class="header-title">⚙️ Terraform 변수 설정</h1>
+      <p class="header-subtitle">프로젝트 설정을 확인하고 필요시 수정하세요</p>
+    </div>
+
+    <div class="content">
+      <!-- 변수 입력 폼 (드롭다운) -->
+      <div class="card collapsible-card">
+        <div class="card-header" id="variables-header">
+          <h3 class="card-title">📝 변수 설정</h3>
+          <button class="btn-icon" id="toggle-variables-btn">▼</button>
+        </div>
+        <div class="card-content" id="variables-content" style="display: none;">
+          <div id="variables-form">
+            <!-- 동적으로 생성됨 -->
+          </div>
+          <div class="form-footer">
+            <button class="btn-text" id="reset-defaults-btn">🔄 기본값으로 복원</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AWS Credentials -->
+      <div class="card">
+        <h3 class="card-title">🔑 AWS Credentials</h3>
+        <div class="form-group">
+          <label for="access-key">Access Key ID</label>
+          <input type="text" id="access-key" class="input" placeholder="AKIAIOSFODNN7EXAMPLE">
+        </div>
+        <div class="form-group">
+          <label for="secret-key">Secret Access Key</label>
+          <input type="password" id="secret-key" class="input" placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY">
+        </div>
+        <div class="form-group">
+          <label for="region">Region</label>
+          <select id="region" class="input">
+            <option value="ap-northeast-2">ap-northeast-2 (서울)</option>
+            <option value="us-east-1">us-east-1 (버지니아)</option>
+            <option value="us-west-2">us-west-2 (오레곤)</option>
+            <option value="eu-west-1">eu-west-1 (아일랜드)</option>
+            <option value="ap-southeast-1">ap-southeast-1 (싱가포르)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 하단 액션 버튼 -->
+      <div class="action-group">
+        <button class="btn btn-primary btn-large" id="start-btn" disabled>🚀 배포하기</button>
+        <button class="btn btn-danger btn-large" id="start-destroy-btn" disabled>🗑️ 리소스 삭제</button>
+      </div>
+
+      <!-- 네비게이션 -->
+      <div class="bottom-navigation">
+        <button class="btn btn-secondary" id="back-to-setup-btn">⬅️ 이전으로</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Execution Screen -->
+  <div id="execution-screen" class="screen">
+    <div class="header-small">
+      <h2>Terraform Runner - 실행 중</h2>
+    </div>
+
+    <div class="content-split">
+      <!-- 좌측: 실행 단계 -->
+      <div class="sidebar">
+        <h3 class="sidebar-title">📋 실행 단계</h3>
+
+        <div class="steps">
+          <div class="step step-completed" id="step-zip">
+            <span class="step-icon">✅</span>
+            <span class="step-text">ZIP Import</span>
+          </div>
+          <div class="step step-completed" id="step-aws">
+            <span class="step-icon">✅</span>
+            <span class="step-text">AWS Configure</span>
+          </div>
+          <div class="step step-pending" id="step-init">
+            <span class="step-icon">⏸️</span>
+            <span class="step-text">terraform init</span>
+          </div>
+          <div class="step step-pending" id="step-plan">
+            <span class="step-icon">⏸️</span>
+            <span class="step-text">terraform plan</span>
+          </div>
+          <div class="step step-pending" id="step-apply">
+            <span class="step-icon">⏸️</span>
+            <span class="step-text">terraform apply</span>
+          </div>
+          <div class="step step-pending" id="step-destroy" style="display: none;">
+            <span class="step-icon">⏸️</span>
+            <span class="step-text">terraform destroy</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-label">진행률: <span id="progress-percent">0</span>%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 우측: 로그 출력 -->
+      <div class="main-content">
+        <div class="log-header">
+          <h3>📄 실행 로그</h3>
+          <div class="log-actions">
+            <button class="btn btn-small" id="copy-log-btn">📋 복사</button>
+            <button class="btn btn-small" id="save-log-btn">💾 저장</button>
+          </div>
+        </div>
+        <div class="log-output" id="log-output"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" id="restart-btn" disabled>🔄 다시 실행</button>
+      <button class="btn btn-secondary" id="cancel-btn">❌ 취소</button>
+    </div>
+  </div>
+
+  <!-- Plan Results Modal -->
+  <div id="plan-modal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2>📊 Terraform Plan 결과</h2>
+      </div>
+      <div class="modal-body">
+        <div class="resource-summary">
+          <div class="resource-card resource-add">
+            <div class="resource-icon">➕</div>
+            <div class="resource-count" id="plan-add-count">0</div>
+            <div class="resource-label">생성</div>
+          </div>
+          <div class="resource-card resource-change">
+            <div class="resource-icon">🔄</div>
+            <div class="resource-count" id="plan-change-count">0</div>
+            <div class="resource-label">변경</div>
+          </div>
+          <div class="resource-card resource-destroy">
+            <div class="resource-icon">➖</div>
+            <div class="resource-count" id="plan-destroy-count">0</div>
+            <div class="resource-label">삭제</div>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          ⚠️ 주의: Apply를 실행하면 실제 AWS 리소스가 생성되며 비용이 발생할 수 있습니다.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancel-plan-btn">
+          취소
+        </button>
+        <button class="btn btn-primary" id="apply-btn">
+          ✅ Apply 실행
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complete Screen -->
+  <div id="complete-screen" class="screen">
+    <div class="header">
+      <div class="header-icon success">✅</div>
+      <h1 class="header-title">배포가 완료되었습니다!</h1>
+    </div>
+
+    <div class="content">
+      <div class="card">
+        <h3 class="card-title">📊 실행 요약</h3>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-label">총 소요 시간</div>
+            <div class="summary-value" id="total-time">-</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">생성된 리소스</div>
+            <div class="summary-value" id="resources-added">-</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">변경된 리소스</div>
+            <div class="summary-value" id="resources-changed">-</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">삭제된 리소스</div>
+            <div class="summary-value" id="resources-destroyed">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="outputs-card" style="display: none;">
+        <div class="card-title-row">
+          <h3 class="card-title">📤 Terraform Outputs</h3>
+          <button class="btn btn-small" id="copy-outputs-btn">📋 복사</button>
+        </div>
+        <pre class="outputs-display" id="outputs-display"></pre>
+      </div>
+
+      <div class="actions-center">
+        <button class="btn btn-danger btn-large" id="destroy-btn" style="display: none;">🗑️ 리소스 삭제</button>
+        <button class="btn btn-secondary btn-large" id="view-log-btn">🔍 로그 보기</button>
+        <button class="btn btn-primary btn-large" id="home-btn">🏠 처음으로</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Destroy Confirmation Modal -->
+  <div id="destroy-modal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">⚠️ 리소스 삭제 확인</h3>
+      <p class="modal-message">
+        <strong>경고:</strong> 이 작업은 되돌릴 수 없습니다!<br><br>
+        모든 AWS 리소스가 영구적으로 삭제됩니다.<br>
+        계속하시겠습니까?
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancel-destroy-btn">취소</button>
+        <button class="btn btn-danger" id="confirm-destroy-btn">삭제 실행</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div id="error-modal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">❌ 오류 발생</h3>
+      <p class="modal-message" id="error-message"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="close-error-btn">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWS CLI Install Modal -->
+  <div id="aws-cli-install-modal" class="modal">
+    <div class="modal-content modal-large">
+      <h3 class="modal-title">⚙️ AWS CLI 설치 필요</h3>
+      <p class="modal-message">
+        Terraform Runner를 사용하려면 AWS CLI가 필요합니다.<br>
+        자동으로 다운로드하여 설치하시겠습니까?
+      </p>
+
+      <div class="install-info">
+        <p><strong>설치 정보:</strong></p>
+        <ul>
+          <li>다운로드 크기: 약 40-50 MB</li>
+          <li>설치 시간: 약 1-2분</li>
+          <li>설치 후 앱 재시작이 필요할 수 있습니다</li>
+        </ul>
+      </div>
+
+      <div class="install-progress" id="install-progress" style="display: none;">
+        <div class="progress-label" id="install-progress-label">준비 중...</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="install-progress-fill"></div>
+        </div>
+        <div class="progress-status" id="install-progress-status"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancel-install-btn">나중에</button>
+        <button class="btn btn-primary" id="start-install-btn">설치하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
+
