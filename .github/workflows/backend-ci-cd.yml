@@ -281,12 +281,11 @@ jobs:
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "*🚢 Starting ECS Deployment...*\n🟩🟩🟩⬜️ This will take approximately 5 minutes"
-                }
+                  "text": "*🚢 Starting ECS Deployment...*\n🟩🟩🟩⬜️ This will take approximately 5 minutes"}
               },
               {
                 "type": "image",
-                "image_url": "https://tenor.com/dbhnSePuS5.gif",
+                "image_url": "https://i.pinimg.com/originals/50/d0/50/50d050588f1b25a377f1bed2ad8f0913.gif",
                 "alt_text": "deployment in progress"
               }
             ]
