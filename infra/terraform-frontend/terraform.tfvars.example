@@ -1,0 +1,15 @@
+# AWS 설정
+aws_region   = "ap-northeast-2"
+project_name = "myapp"
+environment  = "prod"
+
+# CloudFront 가격 정책
+# PriceClass_100: 북미, 유럽 (저렴)
+# PriceClass_200: 북미, 유럽, 아시아, 중동, 아프리카
+# PriceClass_All: 전체 엣지 로케이션
+price_class = "PriceClass_100"
+
+# 커스텀 도메인 사용 시 (선택적)
+# use_custom_domain = true
+# domain_name       = "www.example.com"
+# route53_zone_id   = "Z1234567890ABC"
