@@ -1,0 +1,143 @@
+name: Rollback Frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_id:
+        description: 'S3 Version ID to rollback (leave empty to rollback to previous version)'
+        required: false
+        type: string
+      target_file:
+        description: 'Target file to rollback (default: index.html)'
+        required: false
+        default: 'index.html'
+        type: string
+
+env:
+  AWS_REGION: ap-northeast-2
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Find CloudFront distribution
+        id: find-cf
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Comment=='feedback-app-frontend'].Id | [0]" \
+            --output text)
+
+          if [ -z "$DISTRIBUTION_ID" ] || [ "$DISTRIBUTION_ID" = "None" ]; then
+            echo "❌ CloudFront distribution not found!"
+            exit 1
+          fi
+
+          echo "distribution_id=$DISTRIBUTION_ID" >> $GITHUB_OUTPUT
+          echo "✅ Found distribution: $DISTRIBUTION_ID"
+
+      - name: Get S3 bucket name
+        id: get-bucket
+        run: |
+          BUCKET_DOMAIN=$(aws cloudfront get-distribution \
+            --id ${{ steps.find-cf.outputs.distribution_id }} \
+            --query "Distribution.DistributionConfig.Origins.Items[?contains(DomainName, 's3')].DomainName | [0]" \
+            --output text)
+
+          BUCKET_NAME=${BUCKET_DOMAIN%%.s3.*.amazonaws.com}
+
+          echo "bucket=$BUCKET_NAME" >> $GITHUB_OUTPUT
+          echo "✅ S3 Bucket: $BUCKET_NAME"
+
+      - name: List available versions
+        id: list-versions
+        run: |
+          echo "📋 Available versions for ${{ github.event.inputs.target_file }}:"
+          aws s3api list-object-versions \
+            --bucket ${{ steps.get-bucket.outputs.bucket }} \
+            --prefix ${{ github.event.inputs.target_file }} \
+            --query 'Versions[*].[VersionId,LastModified,IsLatest]' \
+            --output table
+
+      - name: Rollback to specific version
+        if: github.event.inputs.version_id != ''
+        run: |
+          echo "🔄 Rolling back ${{ github.event.inputs.target_file }} to version: ${{ github.event.inputs.version_id }}"
+
+          aws s3api copy-object \
+            --bucket ${{ steps.get-bucket.outputs.bucket }} \
+            --copy-source ${{ steps.get-bucket.outputs.bucket }}/${{ github.event.inputs.target_file }}?versionId=${{ github.event.inputs.version_id }} \
+            --key ${{ github.event.inputs.target_file }} \
+            --cache-control "public, max-age=300" \
+            --content-type "text/html"
+
+          echo "✅ Rollback completed to version: ${{ github.event.inputs.version_id }}"
+
+      - name: Rollback to previous version
+        if: github.event.inputs.version_id == ''
+        run: |
+          echo "🔄 Rolling back ${{ github.event.inputs.target_file }} to previous version"
+
+          # Get the second latest version (previous version)
+          PREVIOUS_VERSION=$(aws s3api list-object-versions \
+            --bucket ${{ steps.get-bucket.outputs.bucket }} \
+            --prefix ${{ github.event.inputs.target_file }} \
+            --query 'Versions[1].VersionId' \
+            --output text)
+
+          if [ -z "$PREVIOUS_VERSION" ] || [ "$PREVIOUS_VERSION" = "None" ]; then
+            echo "❌ No previous version found!"
+            exit 1
+          fi
+
+          echo "Found previous version: $PREVIOUS_VERSION"
+
+          aws s3api copy-object \
+            --bucket ${{ steps.get-bucket.outputs.bucket }} \
+            --copy-source ${{ steps.get-bucket.outputs.bucket }}/${{ github.event.inputs.target_file }}?versionId=$PREVIOUS_VERSION \
+            --key ${{ github.event.inputs.target_file }} \
+            --cache-control "public, max-age=300" \
+            --content-type "text/html"
+
+          echo "✅ Rollback completed to version: $PREVIOUS_VERSION"
+
+      - name: Invalidate CloudFront cache
+        id: invalidate
+        run: |
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id ${{ steps.find-cf.outputs.distribution_id }} \
+            --paths "/${{ github.event.inputs.target_file }}" \
+            --query "Invalidation.Id" \
+            --output text)
+
+          echo "invalidation_id=$INVALIDATION_ID" >> $GITHUB_OUTPUT
+          echo "✅ Cache invalidation created: $INVALIDATION_ID"
+
+      - name: Get CloudFront domain
+        id: get-domain
+        run: |
+          DOMAIN=$(aws cloudfront get-distribution \
+            --id ${{ steps.find-cf.outputs.distribution_id }} \
+            --query "Distribution.DomainName" \
+            --output text)
+
+          echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
+
+      - name: Rollback summary
+        run: |
+          echo "======================================"
+          echo "✅ Frontend Rollback Complete"
+          echo "======================================"
+          echo "CloudFront URL: https://${{ steps.get-domain.outputs.domain }}"
+          echo "Distribution ID: ${{ steps.find-cf.outputs.distribution_id }}"
+          echo "S3 Bucket: ${{ steps.get-bucket.outputs.bucket }}"
+          echo "Target File: ${{ github.event.inputs.target_file }}"
+          echo "Invalidation ID: ${{ steps.invalidate.outputs.invalidation_id }}"
+          echo ""
+          echo "⏳ Cache invalidation in progress (1-3 minutes)"
