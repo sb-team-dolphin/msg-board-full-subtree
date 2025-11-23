@@ -1,4 +1,4 @@
-gname: Rollback Frontend
+name: Rollback Frontend
 
 on:
   workflow_dispatch:
